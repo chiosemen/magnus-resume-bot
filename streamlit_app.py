@@ -110,8 +110,8 @@ if "selected_jobs" not in st.session_state:
     st.session_state.selected_jobs = []
 if "applications" not in st.session_state:
     st.session_state.applications = None
-if "current_page" not in st.session_state:
-    st.session_state.current_page = NAVIGATION_PAGES[0]
+if "nav_page" not in st.session_state:
+    st.session_state.nav_page = NAVIGATION_PAGES[0]
 if "api_base_url" not in st.session_state:
     st.session_state.api_base_url = resolve_initial_api_base_url()
 if "api_update_message" not in st.session_state:
@@ -119,9 +119,9 @@ if "api_update_message" not in st.session_state:
 
 
 def navigate_to(page_name: str):
-    """Update the navigation radio selection and rerun the app."""
+    """Update the navigation page and rerun the app."""
     if page_name in NAVIGATION_PAGES:
-        st.session_state.current_page = page_name
+        st.session_state.nav_page = page_name
         st.rerun()
 
 
@@ -587,12 +587,20 @@ def render_sidebar():
     with st.sidebar:
         st.header("Navigation")
 
+        # Get the current page index
+        current_index = NAVIGATION_PAGES.index(st.session_state.nav_page) if st.session_state.nav_page in NAVIGATION_PAGES else 0
+
         page = st.radio(
             "Go to",
             options=NAVIGATION_PAGES,
-            label_visibility="collapsed",
-            key="current_page"
+            index=current_index,
+            label_visibility="collapsed"
         )
+
+        # Update nav_page if radio selection changed
+        if page != st.session_state.nav_page:
+            st.session_state.nav_page = page
+            st.rerun()
 
         st.divider()
 
