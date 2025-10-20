@@ -51,11 +51,11 @@ class Config:
     APP_VERSION: str = os.getenv("APP_VERSION", "1.0.0")
     DEBUG: bool = os.getenv("DEBUG", "false").lower() == "true"
 
-    # CORS settings
+    # CORS settings - Allow all origins for Streamlit integration
     CORS_ORIGINS: List[str] = os.getenv(
         "CORS_ORIGINS",
-        "http://localhost:3000,http://localhost:8000"
-    ).split(",")
+        "*"
+    ).split(",") if os.getenv("CORS_ORIGINS") != "*" else ["*"]
 
     # Database
     DATABASE_PATH: Optional[str] = os.getenv("DATABASE_PATH")

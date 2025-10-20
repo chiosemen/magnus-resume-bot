@@ -1,5 +1,5 @@
-# Minimal dependencies for Vercel deployment
-# This file keeps the deployment size under 250MB limit
+# Dependencies for Magnus Resume Bot
+# Optimized for Vercel deployment (< 250MB limit)
 
 # Core API Framework
 fastapi==0.104.1
@@ -10,8 +10,18 @@ python-multipart==0.0.6
 python-dotenv==1.0.0
 requests==2.31.0
 
-# Optional: Uncomment if needed (increases deployment size)
-# jobspy>=1.2.0
-# pandas==2.0.3
-# beautifulsoup4==4.12.2
-plotly
+# Data processing
+pandas==2.0.3
+
+# Visualization
+plotly==5.18.0
+
+# Streamlit dashboard
+streamlit==1.29.0
+
+# Web scraping (with fallback support)
+jobspy>=1.2.0
+beautifulsoup4==4.12.2
+
+# Async support
+aiohttp==3.9.1
