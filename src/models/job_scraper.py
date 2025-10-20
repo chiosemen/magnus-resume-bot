@@ -645,3 +645,23 @@ def scrape_job(
         results_wanted=results_wanted,
         **kwargs
     )
+if not jobs or len(jobs) == 0:
+    print('[WARN] JobScraper: Fallback to mock data (scraping failed or empty results)')
+    jobs = [
+        {
+            "title": "Scrum Master",
+            "company": "TechCorp",
+            "location": "Remote",
+            "source": "MockDB",
+            "posted_at": "2025-10-20",
+            "url": "https://techcorp.com/jobs/scrum-master"
+        },
+        {
+            "title": "Agile Coach",
+            "company": "Velocity Labs",
+            "location": "New York, NY",
+            "source": "MockDB",
+            "posted_at": "2025-10-19",
+            "url": "https://velocitylabs.com/jobs/agile-coach"
+        }
+    ]
