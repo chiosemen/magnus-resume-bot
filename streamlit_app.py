@@ -9,6 +9,7 @@ This dashboard provides:
 - Responsive design with modern UI
 """
 
+import os
 import streamlit as st
 import requests
 import pandas as pd
@@ -64,7 +65,19 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Configuration
-API_BASE_URL = st.secrets.get("API_BASE_URL", "http://localhost:8000")
+NAVIGATION_PAGES = [
+    "Dashboard",
+    "Job Search",
+    "Resume Upload",
+    "Applications"
+]
+
+# Prefer secrets, then env var, and fall back to localhost for local dev.
+API_BASE_URL = (
+    st.secrets.get("API_BASE_URL")
+    or os.getenv("API_BASE_URL")
+    or "http://localhost:8000"
+).rstrip("/")
 
 # Initialize session state
 if "search_results" not in st.session_state:
@@ -73,6 +86,15 @@ if "selected_jobs" not in st.session_state:
     st.session_state.selected_jobs = []
 if "applications" not in st.session_state:
     st.session_state.applications = None
+if "current_page" not in st.session_state:
+    st.session_state.current_page = NAVIGATION_PAGES[0]
+
+
+def navigate_to(page_name: str):
+    """Update the navigation radio selection and rerun the app."""
+    if page_name in NAVIGATION_PAGES:
+        st.session_state.current_page = page_name
+        st.rerun()
 
 
 # API Helper Functions
@@ -117,7 +139,10 @@ def make_api_request(
         st.error("Request timed out. Please try again.")
         return None
     except requests.exceptions.ConnectionError:
-        st.error(f"Could not connect to API at {API_BASE_URL}")
+        message = f"Could not connect to API at {API_BASE_URL}"
+        if API_BASE_URL.startswith("http://localhost"):
+            message += ". Set API_BASE_URL in Streamlit secrets for cloud deployments."
+        st.error(message)
         return None
     except requests.exceptions.HTTPError as e:
         st.error(f"API error: {e.response.status_code} - {e.response.text}")
@@ -512,13 +537,9 @@ def render_sidebar():
 
         page = st.radio(
             "Go to",
-            options=[
-                "Dashboard",
-                "Job Search",
-                "Resume Upload",
-                "Applications"
-            ],
-            label_visibility="collapsed"
+            options=NAVIGATION_PAGES,
+            label_visibility="collapsed",
+            key="current_page"
         )
 
         st.divider()
@@ -558,6 +579,11 @@ def main():
             st.markdown("- **Job Search**: Find new opportunities")
             st.markdown("- **Resume Upload**: Upload your resume")
             st.markdown("- **Applications**: Track your applications")
+
+            if st.button("Open Job Search Page", use_container_width=True, key="quick_action_job_search"):
+                navigate_to("Job Search")
+            if st.button("Open Resume Upload Page", use_container_width=True, key="quick_action_resume_upload"):
+                navigate_to("Resume Upload")
 
         with col2:
             st.subheader("Recent Activity")
