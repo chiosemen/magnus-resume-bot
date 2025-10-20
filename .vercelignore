@@ -1,0 +1,50 @@
+# Exclude from Vercel deployment
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Local data
+data/
+
+# Tests
+tests/
+*.test.py
+
+# Development files
+streamlit_app.py
+run_api.py
+run_dashboard.py
+
+# Documentation
+docs/
+README.md
+QUICKSTART.md
+TESTING_RESULTS.md
+*.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Git
+.git/
+.gitignore
+
+# Environment
+.env
+.env.local
+
+# Streamlit
+.streamlit/
+
+# OS
+.DS_Store

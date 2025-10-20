@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/main.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.9"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/main.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "api/main.py"
+    }
+  ],
+  "env": {
+    "PYTHONPATH": "/var/task:/var/task/src",
+    "DATABASE_PATH": "/tmp/jobs.db",
+    "APP_NAME": "Magnus Resume Bot API",
+    "APP_VERSION": "1.0.0"
+  }
+}

@@ -1,0 +1,16 @@
+# Minimal dependencies for Vercel deployment
+# This file keeps the deployment size under 250MB limit
+
+# Core API Framework
+fastapi==0.104.1
+uvicorn==0.24.0
+python-multipart==0.0.6
+
+# Essential dependencies
+python-dotenv==1.0.0
+requests==2.31.0
+
+# Optional: Uncomment if needed (increases deployment size)
+# jobspy>=1.2.0
+# pandas==2.0.3
+# beautifulsoup4==4.12.2
