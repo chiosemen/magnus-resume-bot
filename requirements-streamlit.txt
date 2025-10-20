@@ -6,7 +6,7 @@ streamlit==1.29.0
 plotly==5.18.0
 
 # Data handling
-pandas==2.0.3
+pandas==2.2.2
 
 # API Communication
 requests==2.31.0
