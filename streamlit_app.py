@@ -90,9 +90,17 @@ def normalize_url(value: str) -> str:
 
 def resolve_initial_api_base_url() -> str:
     """Resolve the initial API base URL using secrets, env vars, and environment heuristics."""
-    if st.secrets.get("API_BASE_URL"):
-        return normalize_url(st.secrets["API_BASE_URL"])
+    # Try to get from secrets, but handle if secrets file doesn't exist
+    try:
+        if hasattr(st, 'secrets') and st.secrets:
+            api_url = st.secrets.get("API_BASE_URL")
+            if api_url:
+                return normalize_url(api_url)
+    except (FileNotFoundError, Exception):
+        # Secrets file doesn't exist or can't be read - continue to fallbacks
+        pass
 
+    # Try environment variable
     env_value = os.getenv("API_BASE_URL")
     if env_value:
         return normalize_url(env_value)
