@@ -554,10 +554,10 @@ def main():
 
         with col1:
             st.subheader("Quick Actions")
-            if st.button("Search Jobs", use_container_width=True):
-                st.switch_page("Job Search")
-            if st.button("Upload Resume", use_container_width=True):
-                st.switch_page("Resume Upload")
+            st.info("Use the sidebar to navigate to different pages")
+            st.markdown("- **Job Search**: Find new opportunities")
+            st.markdown("- **Resume Upload**: Upload your resume")
+            st.markdown("- **Applications**: Track your applications")
 
         with col2:
             st.subheader("Recent Activity")
