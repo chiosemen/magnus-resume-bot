@@ -14,3 +14,4 @@ requests==2.31.0
 # jobspy>=1.2.0
 # pandas==2.0.3
 # beautifulsoup4==4.12.2
+plotly
