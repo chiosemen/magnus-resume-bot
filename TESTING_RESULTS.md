@@ -199,7 +199,7 @@ INFO:     Application startup complete.
 
 1. **jobspy not installed** - Optional dependency for job scraping
    - Warning appears but doesn't prevent application from running
-   - Install with: `pip install jobspy>=1.2.0`
+   - Install with: `pip install jobspy==0.31.0`
 
 2. **Virtual environment** - Ensure you're in the virtual environment
    ```bash

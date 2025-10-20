@@ -94,12 +94,13 @@ requests==2.31.0
 ## 🛠️ Issues Resolved
 
 ### Issue 1: jobspy Version Conflict
-**Problem:** `jobspy>=1.2.0` doesn't exist (latest is 0.31.0)
+**Problem:** Earlier instructions referenced `jobspy>=1.2.0`, but the latest release line is 0.31.x, causing dependency resolution failures.
 
 **Solution:**
 - Created `requirements-full.txt` with all dependencies
 - Created minimal `requirements.txt` for Vercel with only essential packages
 - Removed heavy dependencies to stay under size limit
+- Documented the optional pin as `jobspy==0.31.0` for local installs
 
 ### Issue 2: Read-Only File System
 **Problem:** Database trying to write to `/var/task/data` (read-only on Vercel)

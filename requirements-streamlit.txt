@@ -2,8 +2,8 @@
 # Optimized for dashboard functionality
 
 # Core Dashboard Framework
-streamlit==1.28.0
-plotly==5.17.0
+streamlit==1.29.0
+plotly==5.18.0
 
 # Data handling
 pandas==2.0.3
@@ -14,7 +14,7 @@ python-dotenv==1.0.0
 
 # Optional: Uncomment if job scraping needed in dashboard
 # jobspy==0.31.0
-# beautifulsoup4==4.12.2
+# beautifulsoup4==4.12.3
 
 # Optional: Uncomment for advanced features
 # scikit-learn==1.3.0

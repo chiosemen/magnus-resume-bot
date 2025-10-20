@@ -123,8 +123,8 @@ The deployment process will:
 You'll see:
 ```
 Installing dependencies...
-✅ streamlit==1.28.0
-✅ plotly==5.17.0
+✅ streamlit==1.29.0
+✅ plotly==5.18.0
 ✅ pandas==2.0.3
 ✅ requests==2.31.0
 
