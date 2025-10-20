@@ -19,9 +19,9 @@ plotly==5.18.0
 # Streamlit dashboard
 streamlit==1.29.0
 
-# Web scraping (with fallback support)
-jobspy==0.31.0
-beautifulsoup4==4.12.3
+# Web scraping (optional for job scraper features)
+# jobspy==0.31.0
+# beautifulsoup4==4.12.3
 
 # Async support
 aiohttp==3.9.5

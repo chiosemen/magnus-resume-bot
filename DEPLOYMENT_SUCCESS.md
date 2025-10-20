@@ -98,9 +98,9 @@ requests==2.31.0
 
 **Solution:**
 - Created `requirements-full.txt` with all dependencies
-- Created minimal `requirements.txt` for Vercel with only essential packages
+- Created minimal `requirements.txt` for Vercel/Streamlit with only essential packages
 - Removed heavy dependencies to stay under size limit
-- Documented the optional pin as `jobspy==0.31.0` for local installs
+- Documented the optional pin as `jobspy==0.31.0` for local installs when job scraping is required
 
 ### Issue 2: Read-Only File System
 **Problem:** Database trying to write to `/var/task/data` (read-only on Vercel)
