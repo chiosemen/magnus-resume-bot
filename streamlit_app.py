@@ -10,6 +10,7 @@ This dashboard provides:
 """
 
 import os
+from urllib.parse import urlparse
 import streamlit as st
 import requests
 import pandas as pd
@@ -72,12 +73,35 @@ NAVIGATION_PAGES = [
     "Applications"
 ]
 
-# Prefer secrets, then env var, and fall back to localhost for local dev.
-API_BASE_URL = (
-    st.secrets.get("API_BASE_URL")
-    or os.getenv("API_BASE_URL")
-    or "http://localhost:8000"
-).rstrip("/")
+DEFAULT_LOCAL_API_BASE_URL = "http://localhost:8000"
+DEFAULT_PROD_API_BASE_URL = "https://magnus-resume-bot.vercel.app"
+CLOUD_HOME_DIRECTORY = "/home/adminuser"
+
+
+def is_streamlit_cloud() -> bool:
+    """Best-effort detection for Streamlit Community Cloud environment."""
+    return os.path.expanduser("~") == CLOUD_HOME_DIRECTORY
+
+
+def normalize_url(value: str) -> str:
+    """Strip whitespace and trailing slash from URLs."""
+    return value.strip().rstrip("/") if value else value
+
+
+def resolve_initial_api_base_url() -> str:
+    """Resolve the initial API base URL using secrets, env vars, and environment heuristics."""
+    if st.secrets.get("API_BASE_URL"):
+        return normalize_url(st.secrets["API_BASE_URL"])
+
+    env_value = os.getenv("API_BASE_URL")
+    if env_value:
+        return normalize_url(env_value)
+
+    # Default to the production API on Streamlit Cloud; otherwise use localhost for local dev.
+    if is_streamlit_cloud():
+        return DEFAULT_PROD_API_BASE_URL
+
+    return DEFAULT_LOCAL_API_BASE_URL
 
 # Initialize session state
 if "search_results" not in st.session_state:
@@ -88,6 +112,10 @@ if "applications" not in st.session_state:
     st.session_state.applications = None
 if "current_page" not in st.session_state:
     st.session_state.current_page = NAVIGATION_PAGES[0]
+if "api_base_url" not in st.session_state:
+    st.session_state.api_base_url = resolve_initial_api_base_url()
+if "api_update_message" not in st.session_state:
+    st.session_state.api_update_message = None
 
 
 def navigate_to(page_name: str):
@@ -95,6 +123,29 @@ def navigate_to(page_name: str):
     if page_name in NAVIGATION_PAGES:
         st.session_state.current_page = page_name
         st.rerun()
+
+
+def get_api_base_url() -> str:
+    """Return the API base URL from session state."""
+    return st.session_state.api_base_url
+
+
+def update_api_base_url(new_url: str) -> None:
+    """Update API base URL if valid."""
+    normalized = normalize_url(new_url)
+
+    if not normalized:
+        st.warning("Please provide a valid API URL.")
+        return
+
+    parsed = urlparse(normalized)
+    if not parsed.scheme or not parsed.netloc:
+        st.warning("Please provide a full URL including scheme (e.g., https://example.com).")
+        return
+
+    st.session_state.api_base_url = normalized
+    st.session_state.api_update_message = f"API URL updated to {normalized}"
+    st.rerun()
 
 
 # API Helper Functions
@@ -116,7 +167,8 @@ def make_api_request(
     Returns:
         Response data or None on error
     """
-    url = f"{API_BASE_URL}{endpoint}"
+    base_url = get_api_base_url()
+    url = f"{base_url}{endpoint}"
 
     try:
         if method == "GET":
@@ -139,9 +191,9 @@ def make_api_request(
         st.error("Request timed out. Please try again.")
         return None
     except requests.exceptions.ConnectionError:
-        message = f"Could not connect to API at {API_BASE_URL}"
-        if API_BASE_URL.startswith("http://localhost"):
-            message += ". Set API_BASE_URL in Streamlit secrets for cloud deployments."
+        message = f"Could not connect to API at {base_url}"
+        if base_url.startswith("http://localhost") and is_streamlit_cloud():
+            message += ". Update the API URL in Settings for Streamlit Cloud deployments."
         st.error(message)
         return None
     except requests.exceptions.HTTPError as e:
@@ -545,7 +597,19 @@ def render_sidebar():
         st.divider()
 
         st.subheader("Settings")
-        st.text_input("API URL", value=API_BASE_URL, disabled=True)
+
+        with st.form("api_settings_form"):
+            api_input = st.text_input(
+                "API URL",
+                value=get_api_base_url(),
+                help="Configure the FastAPI backend endpoint used by the dashboard."
+            )
+            if st.form_submit_button("Save API URL", use_container_width=True):
+                update_api_base_url(api_input)
+
+        if st.session_state.api_update_message:
+            st.success(st.session_state.api_update_message)
+            st.session_state.api_update_message = None
 
         st.divider()
 
